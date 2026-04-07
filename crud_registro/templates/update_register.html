@@ -1,0 +1,19 @@
+{% extends "layout/base.html" %}
+{% block content %}
+<div>
+    <h1>Editar registro Civil</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+            <button class="button-succes" type="submit">
+                Editar <i class="fa-solid fa-user-pen"></i>
+            </button>
+            
+            <a href="{% url 'index' %}">
+                <button type="button" class="button-danger">
+                    Cancelar
+                </button>
+            </a>
+    </form>
+</div>
+{% endblock %}

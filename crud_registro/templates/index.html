@@ -1,0 +1,96 @@
+{% extends "layout/base.html" %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+{% block content %}
+<div class="main-container">
+    <div class="header">
+        <h1>Registro Civil</h1>
+        <a id="open_modal" class="btn-create">
+            Agregar registro <i class="fa-solid fa-user-plus"></i>
+        </a>
+    </div>
+    <div id="modalRegistro" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>Generar registro civil</h1>
+            <form method="post" action="{% url 'create_register' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                    <button class="button-succes" type="submit">
+                        Crear <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                    
+                    <a href="{% url 'index' %}">
+                        <button type="button" class="button-danger">
+                            Cancelar
+                        </button>
+                    </a>
+            </form>
+        </div>
+    </div>
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Lugar de Nacimiento</th>
+            <th>Nacionalidad</th>
+            <th>Sexo</th>
+            <th>Acciones</th>
+        </tr>
+        {% for registro in registros %}
+        <tr>
+            <td>{{ registro.nombre }}</td>
+            <td>{{ registro.apellido }}</td>
+            <td>{{ registro.fecha_nacimiento }}</td>
+            <td>{{ registro.lugar_nacimiento }}</td>
+            <td>{{ registro.nacionalidad }}</td>
+            <td>{{ registro.sexo }}</td>
+            <td>
+                <a class="btn-update btn-update-modal">
+                    <i class="fa-solid fa-edit"></i>
+                </a>
+                <div id="modalUpdate{{ registro.id }}" class="modal">
+                    <div class="modal-content">
+                        <span class="close-update">&times;</span>
+                        <h1>Actualizar registro civil</h1>
+                        <form method="post" action="{% url 'update_register' registro.id %}">
+                            {% csrf_token %}
+                            <p> Nombre: <input type="text" name="nombre" value="{{ registro.nombre }}" required></p>
+                            <p> Apellido: <input type="text" name="apellido" value="{{ registro.apellido }}" required></p>
+                            <p> Fecha de Nacimiento: <input type="date" name="fecha_nacimiento" value="{{ registro.fecha_nacimiento }}" required></p>
+                            <p> Lugar de Nacimiento: <input type="text" name="lugar_nacimiento" value="{{ registro.lugar_nacimiento }}" required></p>
+                            <p> Nacionalidad: <input type="text" name="nacionalidad" value="{{ registro.nacionalidad }}" required></p>
+                            <p> Sexo: 
+                                <select name="sexo" required>
+                                    <option value="Masculino" {% if registro.sexo == "Masculino" %}selected{% endif %}>Masculino</option>
+                                    <option value="Femenino" {% if registro.sexo == "Femenino" %}selected{% endif %}>Femenino</option>
+                                    <option value="Otro" {% if registro.sexo == "Otro" %}selected{% endif %}>Otro</option>
+                                </select>
+                            </p>
+                            
+                            <button class="button-succes" type="submit"> 
+                                Guardar
+                            </button>
+                            <a href="{% url 'index' %}">
+                                <button type="button" class="button-danger">
+                                    Cancelar
+                                </button>
+                            </a>
+                        </form>
+                    </div>
+                </div>
+                <a href="{% url 'delete_register' registro.id %}" class="btn-delete">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/modal.js' %}"></script>
+{% endblock %}
